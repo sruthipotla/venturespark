@@ -1,0 +1,875 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VentureSpark - AI Startup Advisor</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f6fc;
+            color: #172039;
+        }
+
+        header {
+            background: #11152e;
+            color: white;
+            padding: 22px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #a994ff;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+        }
+
+        .hero {
+            min-height: 500px;
+            background: linear-gradient(120deg, #11152e, #45348d);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 70px 8%;
+        }
+
+        .hero-content {
+            max-width: 650px;
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            color: #a994ff;
+        }
+
+        .hero p {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #d6d5ed;
+            margin-bottom: 30px;
+        }
+
+        button {
+            background: #8064f7;
+            color: white;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #6246dc;
+        }
+
+        .features {
+            padding: 65px 8%;
+            text-align: center;
+        }
+
+        .features h2 {
+            font-size: 32px;
+            margin-bottom: 35px;
+        }
+
+        .feature-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 22px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px #0000000d;
+        }
+
+        .feature-card h3 {
+            color: #7257e8;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: #66708a;
+            line-height: 1.6;
+        }
+
+        footer {
+            background: #11152e;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        @media(max-width: 600px) {
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav a {
+                margin: 8px;
+                font-size: 13px;
+            }
+
+            .hero h1 {
+                font-size: 37px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">VentureSpark.</div>
+
+        <nav>
+            <a href="#">Home</a>
+            <a href="#features">Features</a>
+            <a href="#about">About</a>
+        </nav>
+    </header>
+
+    <section class="hero" id="about">
+        <div class="hero-content">
+
+            <h1>
+                Turn Your Ideas Into
+                <span>Successful Startups</span>
+            </h1>
+
+            <p>
+                An AI-Based Startup Innovation Advisor
+                that helps entrepreneurs generate innovative
+                business ideas, analyze market opportunities
+                and develop effective startup strategies.
+            </p>
+
+            <button onclick="alert('Welcome to VentureSpark!')">
+                Get Started
+            </button>
+
+        </div>
+    </section>
+
+    <section class="features" id="features">
+
+        <h2>Our Key Features</h2>
+
+        <div class="feature-container">
+
+            <div class="feature-card">
+                <h3>💡 Idea Generation</h3>
+                <p>Generate innovative startup ideas using AI.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>🚀 Business Strategy</h3>
+                <p>Develop business models and startup strategies.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>🎯 Growth Planning</h3>
+                <p>Receive suggestions to improve and grow your startup.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 VentureSpark | AI-Based Startup Innovation Advisor</p>
+    </footer>
+
+<section style="padding:50px 8%; text-align:center; background:#eeeaff;">
+    <h2>AI Startup Idea Generator</h2>
+
+    <p style="margin:15px;">
+        Discover innovative startup ideas based on your interests.
+    </p>
+
+    <input
+        type="text"
+        id="interest"
+        placeholder="Enter your interests or skills"
+        style="padding:14px; width:80%; max-width:400px; margin:15px; border-radius:8px; border:1px solid #aaa;"
+    >
+
+    <br>
+
+    <button onclick="generateIdea()">
+        Generate Startup Ideas
+    </button>
+
+    <div id="output" style="margin:25px auto; max-width:600px; line-height:1.8;"></div>
+</section>
+
+
+
+    
+<script>
+async function generateIdea() {
+
+    const interest = document.getElementById("interest").value.trim();
+    const output = document.getElementById("output");
+
+    if (!interest) {
+        alert("Please enter your interests!");
+        return;
+    }
+
+    output.textContent = "✨ Gemini AI is generating your ideas...";
+
+    try {
+       const response = await fetch("http://localhost:3000/api/generate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+               prompt: `Generate 3 short and creative startup ideas based on: ${interest}. For each, give a name, solution and target customers. Keep each idea within 50 words.`
+            })
+        });
+
+        const responseText = await response.text();
+
+console.log("Server status:", response.status);
+console.log("Server response:", responseText);
+
+const data = responseText ? JSON.parse(responseText) : {};
+
+        if (!response.ok) {
+            throw new Error(data.error || "Something went wrong");
+        }
+
+        output.innerHTML = "<h3>✨ Gemini AI Startup Ideas</h3>";
+
+        const result = document.createElement("div");
+        result.style.whiteSpace = "pre-wrap";
+        result.textContent = data.answer;
+
+        output.appendChild(result);
+
+    } catch (error) {
+        output.textContent = "Error: " + error.message;
+    }
+}
+</script>
+
+
+<section style="padding:50px 8%; text-align:center; background:#eeeaff;">
+
+    <h2>AI Business Model Generator 💼</h2>
+
+    <p style="margin:15px;">
+        Generate a basic business model for your startup.
+    </p>
+
+    <input
+        type="text"
+        id="businessIdea"
+        placeholder="Enter your startup idea"
+        style="padding:14px; width:80%; max-width:400px; border-radius:8px; border:1px solid #aaa;"
+    >
+
+    <br><br>
+
+    <button onclick="generateBusinessModel()">
+        Generate Business Model
+    </button>
+
+    <div id="businessResult"
+         style="margin:25px auto; max-width:650px; text-align:left; line-height:1.8;">
+    </div>
+
+</section>
+
+<script>
+async function generateBusinessModel() {
+
+    const idea = document.getElementById("businessIdea").value.trim();
+    const result = document.getElementById("businessResult");
+
+    if (idea === "") {
+        alert("Please enter your startup idea!");
+        return;
+    }
+
+    result.textContent = "✨ Gemini AI is generating your business model...";
+
+    try {
+
+        const response = await fetch("http://localhost:3000/api/generate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                prompt: `Create a detailed business model for this startup idea: ${idea}.
+
+Include these sections:
+1. Value Proposition
+2. Customer Segments
+3. Revenue Sources
+4. Marketing Channels
+5. Cost Structure
+6. Key Resources
+7. Competitive Advantage
+
+Explain every section clearly with practical examples.`
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Something went wrong");
+        }
+
+        result.innerHTML = "<h3>💼 Your AI-Generated Business Model</h3>";
+
+        const answer = document.createElement("div");
+        answer.style.whiteSpace = "pre-wrap";
+        answer.textContent = data.answer;
+
+        result.appendChild(answer);
+
+    } catch (error) {
+
+        result.textContent = "Error: " + error.message;
+
+    }
+}
+</script>
+
+<section style="padding:50px 8%; text-align:center; background:#f5f6fc;">
+
+    <h2>Startup Feasibility Evaluator 🎯</h2>
+
+    <p style="margin:15px;">
+        Evaluate the potential of your startup idea.
+    </p>
+
+    <input
+        type="text"
+        id="feasibilityIdea"
+        placeholder="Enter your startup idea"
+        style="padding:14px; width:80%; max-width:400px; border-radius:8px; border:1px solid #aaa;"
+    >
+
+    <br><br>
+
+    <button onclick="evaluateStartup()">
+        Evaluate Startup
+    </button>
+
+    <div id="feasibilityResult"
+         style="margin:25px auto; max-width:650px; text-align:left; line-height:1.8;">
+    </div>
+
+</section>
+
+<script>
+
+async function evaluateStartup() {
+
+    const idea = document.getElementById("feasibilityIdea").value.trim();
+    const result = document.getElementById("feasibilityResult");
+
+    if (idea === "") {
+        alert("Please enter your startup idea!");
+        return;
+    }
+
+    result.textContent = "✨ Gemini AI is evaluating your startup idea...";
+
+    try {
+
+        const response = await fetch("http://localhost:3000/api/generate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                prompt: `Evaluate this startup idea: ${idea}.
+
+Create a detailed feasibility report covering:
+
+1. Innovation Score out of 100 with explanation.
+2. Market Demand Score out of 100 with explanation.
+3. Technical Feasibility Score out of 100 with explanation.
+4. Target Customers.
+5. Main Challenges and Risks.
+6. Improvement Suggestions.
+7. Final Recommendation.
+
+Give realistic preliminary estimates, not random scores.
+Mention that actual market research is required to validate the assessment.`
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Something went wrong");
+        }
+
+        result.innerHTML = "<h3>📊 AI Startup Evaluation Report</h3>";
+
+        const answer = document.createElement("div");
+        answer.style.whiteSpace = "pre-wrap";
+        answer.style.padding = "15px";
+        answer.textContent = data.answer;
+
+        result.appendChild(answer);
+
+    } catch (error) {
+
+        result.textContent = "Error: " + error.message;
+
+    }
+}
+</script>
+
+<section style="padding:50px 8%; background:#eeeaff; text-align:center;">
+
+    <h2>My Startup Dashboard 🚀</h2>
+
+    <p style="margin:15px;">
+        Save and manage your startup ideas in one place.
+    </p>
+
+    <input
+        type="text"
+        id="dashboardIdea"
+        placeholder="Enter your startup idea"
+        style="padding:14px; width:80%; max-width:400px;
+        border-radius:8px; border:1px solid #aaa;"
+    >
+
+    <br><br>
+
+    <button onclick="saveStartup()">
+        Save Startup Idea
+    </button>
+
+    <div id="savedIdeas"
+         style="max-width:650px; margin:30px auto;
+         text-align:left;">
+    </div>
+
+</section>
+
+<script>
+
+function displayStartups() {
+
+    let ideas = JSON.parse(
+        localStorage.getItem("myStartups") || "[]"
+    );
+
+    let output = document.getElementById("savedIdeas");
+
+    output.innerHTML = "<h3>My Saved Ideas</h3>";
+
+    if (ideas.length === 0) {
+        output.innerHTML += "<p>No startup ideas saved yet.</p>";
+        return;
+    }
+
+    ideas.forEach(function(idea, index) {
+
+        output.innerHTML += `
+            <div style="background:white; padding:15px;
+            margin:12px 0; border-radius:10px;">
+
+                <b>${idea}</b>
+
+                <button onclick="deleteStartup(${index})"
+                style="float:right; padding:7px 12px;
+                background:#e74c3c; font-size:12px;">
+                    Delete
+                </button>
+
+            </div>
+        `;
+    });
+}
+
+function saveStartup() {
+
+    let idea = document.getElementById("dashboardIdea").value.trim();
+
+    if (idea === "") {
+        alert("Please enter a startup idea!");
+        return;
+    }
+
+    let ideas = JSON.parse(
+        localStorage.getItem("myStartups") || "[]"
+    );
+
+    ideas.push(idea);
+
+    localStorage.setItem(
+        "myStartups",
+        JSON.stringify(ideas)
+    );
+
+    document.getElementById("dashboardIdea").value = "";
+
+    displayStartups();
+
+    alert("Startup idea saved successfully!");
+}
+
+function deleteStartup(index) {
+
+    let ideas = JSON.parse(
+        localStorage.getItem("myStartups") || "[]"
+    );
+
+    ideas.splice(index, 1);
+
+    localStorage.setItem(
+        "myStartups",
+        JSON.stringify(ideas)
+    );
+
+    displayStartups();
+}
+
+displayStartups();
+
+</script>
+
+<section style="padding:50px 8%; text-align:center; background:#f5f6fc;">
+
+    <h2>User Login & Registration 🔐</h2>
+
+    <p style="margin:15px;">
+        Join VentureSpark and start your innovation journey.
+    </p>
+
+    <div style="max-width:400px; margin:25px auto;
+    background:white; padding:25px; border-radius:12px;">
+
+        <h3 id="authTitle">Create Account</h3>
+
+        <input
+            type="text"
+            id="userName"
+            placeholder="Enter your name"
+            style="width:100%; padding:12px; margin:12px 0;
+            border:1px solid #aaa; border-radius:7px;"
+        >
+
+        <input
+            type="email"
+            id="userEmail"
+            placeholder="Enter your email"
+            style="width:100%; padding:12px; margin:12px 0;
+            border:1px solid #aaa; border-radius:7px;"
+        >
+
+        <input
+            type="password"
+            id="userPassword"
+            placeholder="Enter your password"
+            style="width:100%; padding:12px; margin:12px 0;
+            border:1px solid #aaa; border-radius:7px;"
+        >
+
+        <button onclick="registerUser()" id="authButton"
+        style="width:100%; margin-top:12px;">
+            Register
+        </button>
+
+        <p style="margin-top:18px;">
+            Already registered?
+            <span onclick="switchLogin()"
+            style="color:#7257e8; cursor:pointer;">
+                Login here
+            </span>
+        </p>
+
+        <div id="authMessage" style="margin-top:15px;"></div>
+
+    </div>
+
+    <div id="welcomeUser"></div>
+
+</section>
+
+<script>
+
+function registerUser() {
+
+    let name = document.getElementById("userName").value.trim();
+    let email = document.getElementById("userEmail").value.trim();
+    let password = document.getElementById("userPassword").value;
+
+    if (!name || !email || !password) {
+        alert("Please fill all the fields!");
+        return;
+    }
+
+    if (password.length < 6) {
+        alert("Password must contain at least 6 characters!");
+        return;
+    }
+
+    localStorage.setItem("ventureUser", name);
+
+    document.getElementById("authMessage").innerHTML =
+        "Registration demo successful! Welcome " + name;
+
+    showWelcome();
+}
+
+function switchLogin() {
+
+    document.getElementById("authTitle").innerText = "User Login";
+
+    document.getElementById("authButton").innerText = "Login";
+
+    document.getElementById("authButton").setAttribute(
+        "onclick", "loginUser()"
+    );
+
+    document.getElementById("authMessage").innerText = "";
+}
+
+function loginUser() {
+
+    let name = document.getElementById("userName").value.trim();
+    let savedName = localStorage.getItem("ventureUser");
+
+    if (name && name === savedName) {
+
+        document.getElementById("authMessage").innerText =
+            "Login successful!";
+
+        showWelcome();
+
+    } else {
+
+        alert("User not found. Please register first.");
+
+    }
+}
+
+function showWelcome() {
+
+    let name = localStorage.getItem("ventureUser");
+
+    document.getElementById("welcomeUser").innerHTML =
+        "<h3>Welcome to VentureSpark, " + name + "! 🚀</h3>";
+
+}
+
+</script>
+
+<section style="padding:50px 8%; background:#eeeaff; text-align:center;">
+
+    <h2>AI Business Plan Generator 📑</h2>
+
+    <p style="margin:15px;">
+        Generate a structured business plan for your startup.
+    </p>
+
+    <textarea
+        id="planIdea"
+        placeholder="Describe your startup idea..."
+        style="width:90%; max-width:550px; height:100px;
+        padding:15px; border-radius:8px; border:1px solid #aaa;"
+    ></textarea>
+
+    <br><br>
+
+    <button onclick="generatePlan()">
+        Generate Business Plan
+    </button>
+
+    <div id="planResult"
+    style="max-width:700px; margin:30px auto;
+    text-align:left; line-height:1.8;">
+    </div>
+
+</section>
+
+
+<script>
+async function generatePlan() {
+
+    const idea = document.getElementById("planIdea").value.trim();
+    const result = document.getElementById("planResult");
+
+    if (idea === "") {
+        alert("Please describe your startup idea!");
+        return;
+    }
+
+    result.textContent = "✨ Gemini AI is preparing your business plan...";
+
+    try {
+
+        const response = await fetch("http://localhost:3000/api/generate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                prompt: `Create a detailed and practical business plan for this startup idea: ${idea}.
+
+Include these sections:
+
+1. Executive Summary
+2. Problem Statement
+3. Proposed Solution
+4. Target Market and Customers
+5. Competitor Analysis
+6. Revenue Model
+7. Marketing and Sales Strategy
+8. Operations and Technology Requirements
+9. Estimated Startup Costs
+10. Risks and Solutions
+11. Future Growth Opportunities
+
+Use clear headings and practical explanations.
+Clearly mention when financial figures are estimates.`
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Something went wrong");
+        }
+
+        result.innerHTML = "<h3>📑 Your AI-Generated Business Plan</h3>";
+
+        const answer = document.createElement("div");
+        answer.style.whiteSpace = "pre-wrap";
+        answer.style.padding = "15px";
+        answer.textContent = data.answer;
+
+        result.appendChild(answer);
+
+    } catch (error) {
+
+        result.textContent = "Error: " + error.message;
+
+    }
+}
+</script>
+<section style="padding:50px 8%; background:#f5f6fc; text-align:center;">
+
+    <h2>AI Market Research & Competitor Analysis 📈</h2>
+
+    <p style="margin:15px;">
+        Understand your target market, customers and competitors.
+    </p>
+
+    <textarea
+        id="marketIdea"
+        placeholder="Describe your startup idea..."
+        style="width:90%; max-width:550px; height:100px;
+        padding:15px; border-radius:8px; border:1px solid #aaa;">
+    </textarea>
+
+    <br><br>
+
+    <button onclick="analyzeMarket()">
+        Analyze Market
+    </button>
+
+    <div id="marketResult"
+    style="max-width:700px; margin:30px auto;
+    text-align:left; line-height:1.8;">
+    </div>
+
+</section>
+<script>
+async function analyzeMarket() {
+
+    const idea = document.getElementById("marketIdea").value.trim();
+    const result = document.getElementById("marketResult");
+
+    if (idea === "") {
+        alert("Please describe your startup idea!");
+        return;
+    }
+
+    result.textContent = "✨ Gemini AI is analyzing your market...";
+
+    try {
+
+        const response = await fetch("http://localhost:3000/api/generate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                prompt: `Conduct a preliminary market research analysis for this startup idea: ${idea}.
+
+Include:
+
+1. Target Market
+2. Ideal Customer Profile
+3. Customer Needs and Problems
+4. Market Opportunities
+5. Main Competitor Categories
+6. Competitive Advantages
+7. Market Challenges
+8. Marketing Recommendations
+9. Final Market Analysis
+
+Give practical explanations. Do not invent market statistics or claim to have verified current competitor data. Clearly identify assumptions.`
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Something went wrong");
+        }
+
+        result.innerHTML = "<h3>📈 AI Market Research Report</h3>";
+
+        const answer = document.createElement("div");
+        answer.style.whiteSpace = "pre-wrap";
+        answer.style.padding = "15px";
+        answer.textContent = data.answer;
+
+        result.appendChild(answer);
+
+    } catch (error) {
+
+        result.textContent = "Error: " + error.message;
+
+    }
+}
+</script> 
