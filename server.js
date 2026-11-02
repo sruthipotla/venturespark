@@ -52,10 +52,36 @@ app.post("/api/generate", async (req, res) => {
             apiKey: process.env.GEMINI_API_KEY
         });
 
-        const response = await ai.models.generateContent({
+        let response;
+
+for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+        response = await ai.models.generateContent({
             model: "gemini-3.8-flash",
             contents: prompt
         });
+
+        break;
+
+    } catch (error) {
+        const status = Number(error.status || error.code);
+
+        const isTemporary =
+            status === 503 ||
+            status === 429 ||
+            status === 500;
+
+        if (!isTemporary || attempt === 3) {
+            throw error;
+        }
+
+        const delay = attempt * 3000;
+
+        console.log(`Gemini retry ${attempt}/3. Waiting ${delay}ms`);
+
+        await new Promise(resolve => setTimeout(resolve, delay));
+    }
+}
 
         const answer = response.text;
 
