@@ -29,7 +29,7 @@ app.get("/test", (req, res) => {
     res.send("AI Startup Advisor Backend is Working!");
 });
 
-// Gemini AI connection
+// Groq AI connection
 app.post("/api/generate", async (req, res) => {
     try {
         const prompt = String(req.body.prompt || "").trim();
@@ -40,61 +40,53 @@ app.post("/api/generate", async (req, res) => {
             });
         }
 
-        if (!process.env.GEMINI_API_KEY) {
+        if (!process.env.GROQ_API_KEY) {
             return res.status(500).json({
-                error: "Gemini API key is missing."
+                error: "Groq API key is missing."
             });
         }
 
-        const { GoogleGenAI } = await import("@google/genai");
+        const response = await fetch(
+            "https://api.groq.com/openai/v1/chat/completions",
+            {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    model: "openai/gpt-oss-20b",
+                    messages: [
+                        {
+                            role: "user",
+                            content: prompt
+                        }
+                    ]
+                })
+            }
+        );
 
-        const ai = new GoogleGenAI({
-            apiKey: process.env.GEMINI_API_KEY
-        });
+        const data = await response.json();
 
-        let response;
-
-for (let attempt = 1; attempt <= 3; attempt++) {
-    try {
-        response = await ai.models.generateContent({
-            model: "gemini-3.8-flash",
-            contents: prompt
-        });
-
-        break;
-
-    } catch (error) {
-        const status = Number(error.status || error.code);
-
-        const isTemporary =
-            status === 503 ||
-            status === 429 ||
-            status === 500;
-
-        if (!isTemporary || attempt === 3) {
-            throw error;
+        if (!response.ok) {
+            console.error("Groq error:", data);
+            return res.status(response.status).json({
+                error: data.error?.message || "Groq request failed."
+            });
         }
 
-        const delay = attempt * 3000;
+        const answer = data.choices?.[0]?.message?.content;
 
-        console.log(`Gemini retry ${attempt}/3. Waiting ${delay}ms`);
+        if (!answer) {
+            throw new Error("Groq returned an empty response.");
+        }
 
-        await new Promise(resolve => setTimeout(resolve, delay));
-    }
-}
-
-        const answer = response.text;
-
-if (!answer) {
-    throw new Error("Gemini returned an empty response.");
-}
-
-return res.json({ answer: answer });
+        return res.json({ answer });
 
     } catch (error) {
-        console.error("Gemini error:", error);
+        console.error("Groq error:", error);
 
-        res.status(500).json({
+        return res.status(500).json({
             error: "Unable to generate AI response. Please try again."
         });
     }
