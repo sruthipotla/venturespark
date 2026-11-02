@@ -6,7 +6,7 @@ const cors = require("cors");
 dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.use(cors({
     origin: [
         "http://127.0.0.1:5500",
@@ -82,7 +82,7 @@ app.use((req, res) => {
     res.status(404).send("Route not found: " + req.method + " " + req.url);
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on port ${PORT}`);
 });
 
