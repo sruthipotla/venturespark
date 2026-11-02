@@ -243,7 +243,7 @@ async function generateIdea() {
     output.textContent = "✨ Gemini AI is generating your ideas...";
 
     try {
-       const response = await fetch("http://localhost:3000/api/generate", {
+       const response = await fetch("/api/generate", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -321,7 +321,7 @@ async function generateBusinessModel() {
 
     try {
 
-        const response = await fetch("http://localhost:3000/api/generate", {
+        const response = await fetch("/api/generate", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -407,7 +407,7 @@ async function evaluateStartup() {
 
     try {
 
-        const response = await fetch("http://localhost:3000/api/generate", {
+        const response = await fetch("/api/generate", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -736,7 +736,7 @@ async function generatePlan() {
 
     try {
 
-        const response = await fetch("http://localhost:3000/api/generate", {
+        const response = await fetch("/api/generate", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -827,7 +827,7 @@ async function analyzeMarket() {
 
     try {
 
-        const response = await fetch("http://localhost:3000/api/generate", {
+        const response = await fetch("/api/generate", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
